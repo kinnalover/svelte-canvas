@@ -41,24 +41,31 @@
  
   const onDrop = (event: DragEvent) => {
     event.preventDefault();
- 
-    if (!type.current) {
-      return;
+
+    const dataStr = event.dataTransfer?.getData('application/node-data');
+    let nodeData = { label: `${type.current} node` };
+    if (dataStr) {
+      try {
+        nodeData = JSON.parse(dataStr);
+      } catch (e) {
+        // fallback to default label if parsing fails
+      }
     }
- 
+
     const position = screenToFlowPosition({
       x: event.clientX,
       y: event.clientY,
     });
- 
+
     const newNode = {
       id: `${Math.random()}`,
       type: type.current,
       position,
-      data: { label: `${type.current} node` },
+      data: nodeData,
       origin: [0.5, 0.0],
+      type: 'turbo'
     } satisfies Node;
- 
+
     nodes = [...nodes, newNode];
   };
 </script>

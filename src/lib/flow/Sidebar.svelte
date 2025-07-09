@@ -3,13 +3,10 @@
  
   const type = useDnD();
  
-  const onDragStart = (event: DragEvent, nodeType: string) => {
-    if (!event.dataTransfer) {
-      return null;
-    }
- 
+  const onDragStart = (event: DragEvent, nodeType: string, nodeData: object) => {
+    if (!event.dataTransfer) return;
+    event.dataTransfer.setData('application/node-data', JSON.stringify(nodeData));
     type.current = nodeType;
- 
     event.dataTransfer.effectAllowed = 'move';
   };
 </script>
@@ -17,27 +14,19 @@
 <aside>
   <div class="label">You can drag these nodes to the pane below.</div>
   <div class="nodes-container">
-    <div
-      class="input-node node"
-      on:dragstart={(event) => onDragStart(event, 'input')}
-      draggable={true}
-    >
-      Input Node
-    </div>
-    <div
-      class="default-node node"
-      on:dragstart={(event) => onDragStart(event, 'default')}
-      draggable={true}
-    >
-      Default Node
-    </div>
-    <div
-      class="output-node node"
-      on:dragstart={(event) => onDragStart(event, 'output')}
-      draggable={true}
-    >
-      Output Node
-    </div>
+    {#each [
+      { class: 'input-node', type: 'input', label: 'Input Node',  data: { icon: 'function', title: 'readFile', subtitle: 'api.ts' } },
+      { class: 'default-node', type: 'default', label: 'Default Node' ,data: { icon: 'function', title: 'readFile', subtitle: 'api.ts' }},
+      { class: 'output-node', type: 'output', label: 'Output Node', data: { icon: 'function', title: 'readFile', subtitle: 'api.ts' }}
+    ] as node}
+      <div
+        class={`${node.class} node`}
+        on:dragstart={(event) => onDragStart(event, node.type, node.data)}
+        draggable={true}
+      >
+        {node.label}
+      </div>
+    {/each}
   </div>
 </aside>
  
