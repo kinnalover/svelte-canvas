@@ -3,6 +3,14 @@
  
   const type = useDnD();
  
+  // Define sidebar nodes as a separate array
+  const sidebarNodes = [
+    { class: 'input-node', type: 'turbo', label: 'Input Node',  data: { icon: 'function', title: 'readFile', subtitle: 'api.ts' } },
+    { class: 'default-node', type: 'turbo', label: 'Default Node' ,data: { icon: 'function', title: 'readFile', subtitle: 'api.ts' }},
+    { class: 'output-node', type: 'turbo', label: 'Output Node', data: { icon: 'function', title: 'readFile', subtitle: 'api.ts' }},
+    { class: 'http-request-node', type: 'httprequestnode', label: 'HTTP Request', data: { icon: 'cloud', title: 'HTTP Request', subtitle: 'api.example.com' } }
+  ];
+ 
   const onDragStart = (event: DragEvent, nodeType: string, nodeData: object) => {
     if (!event.dataTransfer) return;
     event.dataTransfer.setData('application/node-data', JSON.stringify(nodeData));
@@ -14,11 +22,7 @@
 <aside>
   <div class="label">You can drag these nodes to the pane below.</div>
   <div class="nodes-container">
-    {#each [
-      { class: 'input-node', type: 'input', label: 'Input Node',  data: { icon: 'function', title: 'readFile', subtitle: 'api.ts' } },
-      { class: 'default-node', type: 'default', label: 'Default Node' ,data: { icon: 'function', title: 'readFile', subtitle: 'api.ts' }},
-      { class: 'output-node', type: 'output', label: 'Output Node', data: { icon: 'function', title: 'readFile', subtitle: 'api.ts' }}
-    ] as node}
+    {#each sidebarNodes as node}
       <div
         class={`${node.class} node`}
         on:dragstart={(event) => onDragStart(event, node.type, node.data)}

@@ -1,30 +1,40 @@
 <script lang="ts">
-  import { type EdgeProps, getBezierPath } from '@xyflow/svelte';
- 
-  let {
-    sourceX,
-    sourceY,
-    sourcePosition,
-    targetX,
-    targetY,
-    targetPosition,
-    markerEnd,
-    id,
-  }: EdgeProps = $props();
- 
-  let [edgePath] = $derived.by(() => {
-    const xEqual = sourceX === targetX;
-    const yEqual = sourceY === targetY;
-    return getBezierPath({
-      // we need this little hack in order to display the gradient for a straight line
-      sourceX: xEqual ? sourceX + 0.0001 : sourceX,
-      sourceY: yEqual ? sourceY + 0.0001 : sourceY,
-      sourcePosition,
+  import {
+    BaseEdge,
+    EdgeReconnectAnchor,
+    getBezierPath,
+    type EdgeProps,
+  } from '@xyflow/svelte';
+
+  let { sourceX, sourceY, targetX, targetY, selected, data }: EdgeProps = $props();
+
+  const [edgePath, labelX, labelY] = $derived(
+    getBezierPath({
+      sourceX,
+      sourceY,
       targetX,
       targetY,
-      targetPosition,
-    });
-  });
+    }),
+  );
+
+  let reconnecting = $state(false);
 </script>
- 
-<path {id} class="svelte-flow__edge-path" d={edgePath} marker-end={markerEnd} />
+
+{#if !reconnecting}
+  <BaseEdge path={edgePath} />
+{/if}
+
+{#if selected}
+  <EdgeReconnectAnchor
+    bind:reconnecting
+    type="source"
+    position={{ x: sourceX, y: sourceY }}
+    style={!reconnecting ? 'background: rgba(255, 64, 0, 0.5); border-radius: 100%;' : ''}
+  />
+  <EdgeReconnectAnchor
+    bind:reconnecting
+    type="target"
+    position={{ x: targetX, y: targetY }}
+    style={!reconnecting ? 'background: rgba(255, 64, 0, 0.5); border-radius: 100%;' : ''}
+  />
+{/if}

@@ -5,6 +5,7 @@
  
   import { initialNodes, initialEdges } from './nodes-and-edges';
   import TurboNode from './TurboNode.svelte';
+  import HttpRequestNode from './HttpRequestNode.svelte';
   import TurboEdge from './TurboEdge.svelte';
   import { useDnD } from './DnDProvider.svelte';
   import Sidebar from './Sidebar.svelte';
@@ -15,6 +16,7 @@
   
   const nodeTypes = {
     turbo: TurboNode,
+    httprequestnode: HttpRequestNode,
   };
  
   const edgeTypes = {
@@ -63,7 +65,7 @@
       position,
       data: nodeData,
       origin: [0.5, 0.0],
-      type: 'turbo'
+      
     } satisfies Node;
 
     nodes = [...nodes, newNode];
